@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haliday Special Treat</title>
+<style>
+:root { color-scheme: light; --orange:#e96516; --orange-dark:#a93b08; --cream:#fff9f3; --white:#ffffff; --text:#20130d; --muted:#75665d; --line:#eaded5; --ink:#17100c; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; font-family:Inter, Arial, Helvetica, sans-serif; background:#fff; color:var(--text); }
+#app { min-height:100vh; background:#fff; color:var(--text); }
+header { background:#fff; color:var(--text); position:sticky; top:0; z-index:10; border-bottom:1px solid #eee5df; }
+.nav { max-width:1240px; margin:auto; display:flex; align-items:center; justify-content:space-between; padding:18px 28px; }
+.logo { display:flex; align-items:center; gap:11px; font-size:21px; font-weight:900; letter-spacing:-.6px; }
+.logo-mark { width:40px; height:40px; border-radius:11px; background:var(--orange); color:white; display:grid; place-items:center; font-size:20px; box-shadow:0 7px 18px #e9651633; }
+nav { display:flex; align-items:center; gap:28px; }
+nav a { color:#40332c; text-decoration:none; margin-left:0; font-weight:700; font-size:14px; }
+nav a:hover { color:var(--orange); }
+.auth-buttons { display:flex; gap:8px; margin-left:18px; }
+.auth-btn { border:1px solid #dfd3cb; background:white; color:#3a2a22; padding:10px 15px; border-radius:9px; cursor:pointer; font-weight:800; }
+.auth-btn.signup { background:var(--orange); color:white; border-color:var(--orange); }
+.modal { display:none; position:fixed; inset:0; background:#24150e99; z-index:50; place-items:center; padding:20px; }
+.modal.show { display:grid; }
+.auth-card { width:min(430px,100%); background:white; color:var(--text); border-radius:22px; padding:30px; box-shadow:0 25px 70px #0005; position:relative; }
+.auth-card h2 { margin:0 0 7px; font-size:28px; }
+.auth-card p { color:var(--muted); margin-top:0; }
+.close { position:absolute; right:16px; top:13px; border:0; background:#fff0e2; color:var(--orange-dark); width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:20px; }
+.auth-tabs { display:flex; gap:8px; margin:20px 0; background:#fff3e8; padding:5px; border-radius:10px; }
+.auth-tab { flex:1; border:0; background:transparent; padding:10px; border-radius:7px; font-weight:800; cursor:pointer; }
+.auth-tab.active { background:var(--orange); color:white; }
+.auth-form { display:grid; gap:12px; }
+.auth-form input { padding:13px; }
+.auth-note { font-size:12px; text-align:center; margin-top:15px; }
+.hero { background:linear-gradient(105deg,#fffaf6 0%,#fff4e9 48%,#f7d1b1 100%); padding:82px 28px 78px; overflow:hidden; }
+.hero-inner { max-width:1240px; margin:auto; display:grid; grid-template-columns:1.05fr .95fr; gap:55px; align-items:center; }
+.badge { display:inline-block; color:var(--orange-dark); padding:0; font-weight:900; font-size:12px; letter-spacing:1.8px; }
+h1 { font-size:clamp(48px,6.5vw,82px); line-height:.98; letter-spacing:-3px; margin:17px 0 20px; }
+.hero p { font-size:17px; line-height:1.8; color:var(--muted); max-width:590px; }
+.buttons { display:flex; gap:12px; flex-wrap:wrap; margin-top:25px; }
+.btn { border:0; border-radius:12px; padding:13px 19px; font-weight:800; cursor:pointer; font-size:15px; }
+.btn-primary { background:var(--orange); color:white; }
+.btn-secondary { background:white; color:var(--orange-dark); border:1px solid #f2c5a4; }
+.hero-card { background:#20130d; color:white; border-radius:30px; padding:0; overflow:hidden; box-shadow:0 28px 60px #4a281c30; transform:none; min-height:430px; display:flex; flex-direction:column; justify-content:flex-end; background-image:linear-gradient(180deg,#20130d00 30%,#20130dcc 100%),url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1000&q=85'); background-size:cover; background-position:center; }
+.hero-card .food { display:none; }
+.hero-card h3,.hero-card p { margin-left:32px; margin-right:32px; }
+.hero-card h3 { font-size:28px; margin:10px 0; }
+.section { max-width:1240px; margin:auto; padding:82px 28px; }
+.section-title { text-align:left; margin-bottom:35px; }
+.section-title h2 { font-size:40px; letter-spacing:-1.5px; margin:0 0 8px; }
+.section-title p { color:var(--muted); }
+.categories { display:flex; gap:9px; justify-content:flex-start; flex-wrap:wrap; margin-bottom:30px; }
+.filter { padding:10px 16px; border-radius:8px; border:1px solid var(--line); background:white; color:var(--text); cursor:pointer; font-weight:700; }
+.filter.active,.filter:hover { background:var(--orange); color:white; border-color:var(--orange); }
+.products { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.card { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:white; box-shadow:0 12px 30px #4d29100b; transition:.2s; }
+.card:hover { transform:translateY(-4px); box-shadow:0 18px 35px #4d291018; }
+.card-top { height:180px; background:#fff2e5; display:grid; place-items:center; font-size:0; background-size:cover; background-position:center; }
+.card-top img { width:100%; height:100%; object-fit:cover; display:block; }
+.card-body { padding:20px; }
+.card h3 { margin:0 0 7px; }
+.card p { color:var(--muted); min-height:42px; line-height:1.45; }
+.price { color:var(--orange-dark); font-size:20px; font-weight:900; margin:12px 0; }
+.order-row { display:flex; gap:9px; }
+.order-row .btn { flex:1; }
+.about { background:#20130d; color:white; max-width:none; }
+.about-inner { max-width:1240px; margin:auto; padding:82px 28px; display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+.about p { line-height:1.8; color:#fff8f3; }
+.features { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.feature { background:#ffffff0c; border:1px solid #ffffff1a; padding:20px; border-radius:12px; }
+.feature strong { display:block; margin-bottom:6px; }
+.order-box { background:#fff; border-radius:16px; padding:32px; max-width:820px; margin:auto; border:1px solid var(--line); box-shadow:0 18px 45px #4d29100d; }
+form { display:grid; gap:14px; }
+input,select,textarea { width:100%; padding:13px; border:1px solid #e5c7b1; border-radius:10px; font:inherit; background:white; color:#2b1a10; }
+textarea { min-height:100px; resize:vertical; }
+.total { display:flex; justify-content:space-between; font-size:21px; font-weight:900; padding:10px 0; }
+footer { background:#120c09; color:white; text-align:center; padding:35px 20px; }
+.cart { position:fixed; right:24px; bottom:24px; background:var(--orange); color:white; border:0; width:58px; height:58px; border-radius:14px; font-size:24px; cursor:pointer; box-shadow:0 12px 30px #0003; }
+.cart span { position:absolute; top:-5px; right:-3px; background:#24150e; font-size:12px; padding:4px 7px; border-radius:20px; }
+.toast { position:fixed; left:50%; bottom:25px; transform:translateX(-50%) translateY(100px); background:#24150e; color:white; padding:13px 18px; border-radius:10px; transition:.3s; z-index:20; }
+.toast.show { transform:translateX(-50%) translateY(0); }
+@media (max-width:800px) { nav { gap:12px; } nav a { font-size:13px; } .auth-buttons { margin-left:6px; } .hero-inner,.about-inner { grid-template-columns:1fr; } .products { grid-template-columns:1fr 1fr; } }
+@media (max-width:520px) { .nav { align-items:flex-start; gap:10px; } nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:7px; } nav a { margin-left:4px; } .auth-buttons { width:100%; justify-content:flex-end; margin-left:0; } .products { grid-template-columns:1fr; } .hero { padding-top:45px; } .features { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="nav"><div class="logo"><div class="logo-mark">H</div>Haliday Special Treat</div><nav><a href="#home">Home</a><a href="#menu">Menu</a><a href="#about">Our Story</a><a href="#order">Order</a><span class="auth-buttons"><button class="auth-btn" onclick="openAuth('login')">Login</button><button class="auth-btn signup" onclick="openAuth('signup')">Create Account</button></span></nav></div></header>
+<section class="hero" id="home"><div class="hero-inner"><div><span class="badge">HALIDAY SPECIAL TREAT • LAGOS</span><h1>Food made<br><span style="color:var(--orange)">for moments.</span></h1><p>Premium cakes, comforting meals, pastries and party favourites — thoughtfully prepared for celebrations, family tables and every craving in between.</p><div class="buttons"><a class="btn btn-primary" href="#menu" style="text-decoration:none">Shop the Menu</a><a class="btn btn-secondary" href="#order" style="text-decoration:none">Start an Order</a></div></div><div class="hero-card"><h3>Made fresh. Served with care.</h3><p style="color:#d9cbc3">From a single treat to a full celebration, choose what makes your occasion special.</p></div></div></section>
+<section class="section" id="menu"><div class="section-title"><h2>Our Special Menu</h2><p>Choose a category and add your favourites to your order.</p></div><div class="categories"><button class="filter active" onclick="filterProducts('all',this)">All</button><button class="filter" onclick="filterProducts('cakes',this)">Cakes</button><button class="filter" onclick="filterProducts('meals',this)">Meals</button><button class="filter" onclick="filterProducts('pastries',this)">Pastries</button><button class="filter" onclick="filterProducts('small-chops',this)">Small Chops</button></div><div class="products" id="products"></div></section>
+<section class="about"><div class="about-inner" id="about"><div><h2>Why choose Haliday Special Treat?</h2><p>We believe good food should look amazing and taste even better. Every order is prepared with care, attention to detail and the goal of making your celebration memorable.</p></div><div class="features"><div class="feature"><strong>Freshly Made</strong>Prepared with care for every customer.</div><div class="feature"><strong>Custom Cakes</strong>Cakes for birthdays, weddings and events.</div><div class="feature"><strong>Easy Ordering</strong>Simple ordering process from your phone or PC.</div><div class="feature"><strong>Special Service</strong>Your satisfaction is our priority.</div></div></div></section>
+<section class="section" id="order"><div class="section-title"><h2>Place Your Order</h2><p>Send us your order details and we'll prepare it for you.</p></div><div class="order-box"><form onsubmit="submitOrder(event)"><input id="name" required placeholder="Your full name"><input id="phone" required placeholder="Phone number"><select id="item" required><option value="">Select an item</option></select><input id="quantity" type="number" min="1" value="1" required><textarea id="note" placeholder="Extra details (size, flavour, delivery address, etc.)"></textarea><div class="total"><span>Estimated total</span><span id="total">₦0</span></div><button class="btn btn-primary" type="submit">Submit Order</button></form></div></section>
+<footer><strong>Haliday Special Treat</strong><br><small>Delicious food. Beautiful moments. ❤️</small></footer>
+<button class="cart" onclick="showCart()">🛒<span id="cartCount">0</span></button><div class="toast" id="toast"></div>
+<div class="modal" id="authModal" onclick="if(event.target===this)closeAuth()"><div class="auth-card"><button class="close" onclick="closeAuth()">×</button><div class="logo" style="color:var(--orange-dark);font-size:20px"><div class="logo-mark" style="background:var(--orange);color:white">🍰</div>Haliday Special Treat</div><h2 id="authTitle" style="margin-top:22px">Welcome back</h2><p id="authSubtitle">Login to manage your orders and account.</p><div class="auth-tabs"><button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Login</button><button class="auth-tab" id="signupTab" onclick="switchAuth('signup')">Sign Up</button></div><form class="auth-form" onsubmit="handleAuth(event)"><input id="authName" placeholder="Full name" style="display:none"><input id="authEmail" type="email" required placeholder="Email address"><input id="authPassword" type="password" required placeholder="Password"><input id="authConfirm" type="password" placeholder="Confirm password" style="display:none"><button class="btn btn-primary" id="authSubmit" type="submit">Login to Account</button></form><div class="auth-note">Your account helps us keep your orders and details organized.</div></div></div>
+</div>
+<script>
+const products=[
+{name:'Classic Birthday Cake',cat:'cakes',price:18000,image:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85',desc:'Soft, delicious celebration cake with your choice of message.'},
+{name:'Chocolate Cake',cat:'cakes',price:22000,image:'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=85',desc:'Rich chocolate cake for chocolate lovers.'},
+{name:'Jollof Rice & Chicken',cat:'meals',price:6500,image:'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&w=900&q=85',desc:'Tasty party-style jollof rice served with chicken.'},
+{name:'Fried Rice & Chicken',cat:'meals',price:7000,image:'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=85',desc:'Flavourful fried rice with a juicy piece of chicken.'},
+{name:'Meat Pie',cat:'pastries',price:1200,image:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=85',desc:'Crispy pastry filled with savoury minced meat.'},
+{name:'Doughnut Box',cat:'pastries',price:4500,image:'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=85',desc:'Fresh soft doughnuts, perfect for sharing.'},
+{name:'Small Chops Box',cat:'small-chops',price:10000,image:'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=85',desc:'A tasty mix of spring rolls, samosa and puff-puff.'},
+{name:'Puff-Puff Pack',cat:'small-chops',price:3500,image:'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85',desc:'Freshly fried, soft and tasty puff-puff.'}
+];
+let cart=[];
+const money=n=>'₦'+n.toLocaleString();
+function renderProducts(cat='all'){const box=document.getElementById('products');box.innerHTML='';products.filter(p=>cat==='all'||p.cat===cat).forEach((p,i)=>{box.innerHTML+=`<article class="card"><div class="card-top"><img src="${p.image}" alt="${p.name}" loading="lazy"></div><div class="card-body"><h3>${p.name}</h3><p>${p.desc}</p><div class="price">${money(p.price)}</div><div class="order-row"><button class="btn btn-primary" onclick="addToCart(${products.indexOf(p)})">Add to Order</button><button class="btn btn-secondary" onclick="quickOrder(${products.indexOf(p)})">Order</button></div></div></article>`})}
+function filterProducts(cat,button){document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));button.classList.add('active');renderProducts(cat)}
+function addToCart(i){cart.push(products[i]);document.getElementById('cartCount').textContent=cart.length;toast(products[i].name+' added to your order!')}
+function showCart(){if(!cart.length){toast('Your order list is empty. Add something from the menu.');return}const names=cart.map(x=>x.name).join(', ');toast(cart.length+' item(s): '+names)}
+function quickOrder(i){document.getElementById('item').value=products[i].name;document.getElementById('quantity').value=1;document.getElementById('order').scrollIntoView({behavior:'smooth'})}
+function updateTotal(){const p=products.find(x=>x.name===document.getElementById('item').value);const q=Number(document.getElementById('quantity').value)||1;document.getElementById('total').textContent=p?money(p.price*q):'₦0'}
+function submitOrder(e){e.preventDefault();const p=document.getElementById('item').value,q=document.getElementById('quantity').value;if(!p)return;toast('Order received! We will contact you to confirm the details.');e.target.reset();document.getElementById('quantity').value=1;document.getElementById('total').textContent='₦0'}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+let authMode='login';
+function openAuth(mode){document.getElementById('authModal').classList.add('show');switchAuth(mode)}
+function closeAuth(){document.getElementById('authModal').classList.remove('show')}
+function switchAuth(mode){authMode=mode;const signup=mode==='signup';document.getElementById('authTitle').textContent=signup?'Create your account':'Welcome back';document.getElementById('authSubtitle').textContent=signup?'Sign up to save your details and manage orders.':'Login to manage your orders and account.';document.getElementById('authName').style.display=signup?'block':'none';document.getElementById('authConfirm').style.display=signup?'block':'none';document.getElementById('authName').required=signup;document.getElementById('authConfirm').required=signup;document.getElementById('authSubmit').textContent=signup?'Create Account':'Login to Account';document.getElementById('loginTab').classList.toggle('active',!signup);document.getElementById('signupTab').classList.toggle('active',signup)}
+function handleAuth(e){e.preventDefault();const email=document.getElementById('authEmail').value;if(authMode==='signup'&&document.getElementById('authPassword').value!==document.getElementById('authConfirm').value){toast('Passwords do not match.');return}closeAuth();toast((authMode==='signup'?'Account created for ':'Welcome back, ')+email+'!')}
+const select=document.getElementById('item');products.forEach(p=>{const o=document.createElement('option');o.value=p.name;o.textContent=p.name+' — '+money(p.price);select.appendChild(o)});select.addEventListener('change',updateTotal);document.getElementById('quantity').addEventListener('input',updateTotal);renderProducts();
+</script>
+</body>
+</html>
